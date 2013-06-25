@@ -5,12 +5,22 @@
 # date: Mon Jun 24 03:43:57 BRT 2013
 # Version 1: 
 #   Backup all MongoDB's databases saving a gzip file for each one in a cloud service (e.g.: Dropbox)
+# Version 2:
+#   Show help/usage message with -h|--help option
 
 SPECIFIC_DB=""
 CLOUD_SERVICE="Copy"
 DB_SERVER="localhost"
 TMP_DIR="/tmp/$DB_SERVER"
 LOGGED_USER=$(whoami)
+HELP_MESSAGE="
+Usage: $(basename "$0") [-h | -v | --zip | --db database | --cloud name]
+
+-z, --zip       Compress as zip in instead of tar.gz
+-h, --help      Help
+-v, --verbose   Verbose
+-c, --cloud     Cloud service name (e.g.: Dropbox) this folder must be in your home
+"
 
 while test -n "$1"
 do
@@ -24,15 +34,19 @@ do
             shift
             SPECIFIC_DB="$1"
                                         ;;
-        --cloud                 )
+        -c | --cloud                 )
             shift
             CLOUD_SERVICE="$1"
                                         ;;
         -v | --verbose          )
             VERBOSE="-v "
                                         ;;
-        --zip                   )
+        -z | --zip                   )
             COMPRESS_TYPE="zip"
+                                        ;;
+        -h | --help             )
+            echo "$HELP_MESSAGE";
+            exit 0
                                         ;;
         *                       )
             echo "Invalid option"
